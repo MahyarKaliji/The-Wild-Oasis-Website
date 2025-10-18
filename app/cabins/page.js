@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import CabinList from "../_components/CabinList";
-import Loading from "./loading";
+import Spinner from "../_components/Spinner";
 
 export const metadata = {
   title: "Cabins",
@@ -21,7 +21,7 @@ export default function Cabins() {
         Welcome to paradise.
       </p>
 
-      <Suspense fallback={<Loading />}>
+      <Suspense fallback={<Spinner />}>
         <CabinList />
       </Suspense>
     </div>
