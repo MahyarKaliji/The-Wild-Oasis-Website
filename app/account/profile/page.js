@@ -6,10 +6,10 @@ export const metadata = {
 };
 
 export default function Profile() {
-
   //   CHANGE
   const countryFlag = "pt.jpg";
   const nationality = "portugal";
+  
   return (
     <div>
       <h2 className="font-semibold text-2xl to-accent-400 mb-4">
