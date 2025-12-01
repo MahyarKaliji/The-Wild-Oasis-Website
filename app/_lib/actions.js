@@ -36,10 +36,7 @@ export async function signOutAction() {
   await signOut({ redirectTo: "/" });
 }
 
-export async function deleteReservation(bookingId) {
-  // await new Promise((res) => setTimeout(res, 5000));
-  // throw new Error("Simulated error for testing optimistic UI");
-
+export async function deleteBooking(bookingId) {
   const session = await auth();
   if (!session) throw new Error("You must be logged in");
 
@@ -58,7 +55,7 @@ export async function deleteReservation(bookingId) {
   revalidatePath("/account/reservations");
 }
 
-export async function updateReservation(formData) {
+export async function updateBooking(formData) {
   const bookingId = Number(formData.get("bookingId"));
 
   const session = await auth();
@@ -91,4 +88,32 @@ export async function updateReservation(formData) {
   revalidatePath(`/account/reservations/edit/${bookingId}`);
   revalidatePath("/account/reservations");
   redirect("/account/reservations");
+}
+
+export async function createBooking(bookingData, formData) {
+  const session = await auth();
+  if (!session) throw new Error("You must be logged in");
+
+  const newBooking = {
+    ...bookingData,
+    guestId: session.user.guestId,
+    numGuests: Number(formData.get("numGuests")),
+    observations: formData.get("observations").slice(0, 1000),
+    extrasPrice: 0,
+    totalPrice: bookingData.cabinPrice,
+    status: "unconfirmed",
+    hasBreakfast: formData.get("hasBreakfast") === "on" ? true : false,
+    isPaid: false,
+  };
+
+  console.log(newBooking);
+
+  const { error } = await supabase.from("bookings").insert([newBooking]);
+
+  if (error) throw new Error("Booking could not be created");
+
+  revalidatePath(`/cabins/${bookingData.cabinId}`);
+  redirect("/cabins/thankyou");
+  // revalidatePath("/account/reservations");
+  // redirect("/account/reservations");
 }

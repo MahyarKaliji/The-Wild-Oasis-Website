@@ -50,7 +50,7 @@ export const getCabins = async function () {
     console.error(error);
     throw new Error("Cabins could not be loaded");
   }
-
+  console.log("data =>", data);
   return data;
 };
 
